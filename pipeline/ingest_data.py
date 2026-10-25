@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import click
 import pandas as pd
 from sqlalchemy import create_engine
 from tqdm.auto import tqdm
@@ -30,19 +31,17 @@ parse_dates = [
 ]
 
 
-def main():
-    target_table = 'yellow_taxi_data'
-    year = 2021
-    month = 1
-
-    pg_user = 'root'
-    pg_pass = 'root'
-    pg_host = 'localhost'
-    pg_db = 'ny_taxi'
-    pg_port = 5432
-
-    chunksize = 100000
-
+@click.command()
+@click.option("--target-table", default="yellow_taxi_data", show_default=True)
+@click.option("--year", type=int, default=2021, show_default=True)
+@click.option("--month", type=click.IntRange(1, 12), default=1, show_default=True)
+@click.option("--pg-user", default="root", show_default=True)
+@click.option("--pg-pass", default="root", show_default=True)
+@click.option("--pg-host", default="localhost", show_default=True)
+@click.option("--pg-db", default="ny_taxi", show_default=True)
+@click.option("--pg-port", type=click.IntRange(1, 65535), default=5432, show_default=True)
+@click.option("--chunksize", type=click.IntRange(min=1), default=100000, show_default=True)
+def main(target_table, year, month, pg_user, pg_pass, pg_host, pg_db, pg_port, chunksize):
     prefix = 'https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/'
     url = f'{prefix}yellow_tripdata_{year}-{month:02d}.csv.gz'
     engine = create_engine(f'postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}')
