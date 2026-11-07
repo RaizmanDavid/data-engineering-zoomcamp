@@ -1,6 +1,6 @@
-.terraform/
-*.tfstate
-*.tfstate.*
+*.tfstate*
 *.tfvars
 *.json
 crash.log
+keys/
+.terraform/
